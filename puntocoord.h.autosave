@@ -1,0 +1,38 @@
+#ifndef PUNTOCOORD_H
+#define PUNTOCOORD_H
+
+#include <QWidget>
+#include <QString>
+#include <QStringList>
+#include "Datum.h"
+
+
+class SistCoord
+{
+public:
+    enum nombre{no_def, Geogr, UTM, GK};
+
+private:
+    bool planas;
+    nombre nom;
+    double falsoEste;
+    double falsoNorte;
+    double meridianoOrigen;
+    double faja;
+
+
+    void configParam();
+
+public:
+ SistCoord(const std::string & = "no_def");
+ SistCoord(const int & = 0);
+
+
+};
+
+
+//Clase para cargar las coordenadas y convertirlas a otro sistema
+class PuntoCoord : public QWidget
+
+
+#endif // PUNTOCOORD_H
