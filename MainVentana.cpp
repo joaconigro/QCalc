@@ -18,12 +18,13 @@ MainVentana::MainVentana(QWidget *parent) :
 
     createActions();
     createMenus();
-    ui->tabWidget->setTabText(0, "Puntual");
-    ui->tabWidget->setTabText(1, "Tabla");
+    ui->tabWidget->setTabText(0, "Conversión Puntual");
+    ui->tabWidget->setTabText(1, "Conversión por Tabla");
     ui->tabWidget->setCurrentIndex(0);
 
 
     connect(this, &MainVentana::geographicFormatChanged, onePoint, &mainWindow::setGeographicFormat);
+    connect(this, &MainVentana::geographicFormatChanged, manyPoints, &TableView::setGeographicFormat);
     connect(this, &MainVentana::loadExcelFile, manyPoints, &TableView::openExcelFile);
 
     emit gmsFormatAction->triggered();
@@ -84,4 +85,5 @@ void MainVentana::onDecimalTriggered()
 void MainVentana::onExcelFileOpened()
 {
     emit loadExcelFile();
+    ui->tabWidget->setCurrentIndex(1);
 }

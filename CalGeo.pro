@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = CalGeo
+TARGET = QCalc
 TEMPLATE = app
 
 include(xlsx/qtxlsx.pri)
@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     OnePoint.cpp \
     TableView.cpp \
     xlsxsheetmodel.cpp \
-    SelectFromListDialog.cpp
+    SelectFromListDialog.cpp \
+    ColumnSelectDialog.cpp
 
 HEADERS  += \
     Datum.h \
@@ -34,15 +35,27 @@ HEADERS  += \
     TableView.h \
     xlsxsheetmodel_p.h \
     xlsxsheetmodel.h \
-    SelectFromListDialog.h
+    SelectFromListDialog.h \
+    ColumnSelectDialog.h
 
 FORMS    += \
     MainVentana.ui \
     OnePoint.ui \
     TableView.ui \
-    SelectFromListDialog.ui
+    SelectFromListDialog.ui \
+    ColumnSelectDialog.ui
 
 DISTFILES +=
 
 RESOURCES += \
     recursos.qrc
+
+windows {
+       ICON = icono.png
+}
+linux {
+       ICON = icono.png
+}
+macx {
+       ICON = icono.icns
+}

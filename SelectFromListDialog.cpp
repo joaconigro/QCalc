@@ -1,6 +1,7 @@
 #include "SelectFromListDialog.h"
 #include "ui_SelectFromListDialog.h"
 #include <QList>
+#include <QPushButton>
 #include "TableView.h"
 
 SelectFromListDialog::SelectFromListDialog(const QStringList list, QWidget *parent) :
@@ -8,6 +9,9 @@ SelectFromListDialog::SelectFromListDialog(const QStringList list, QWidget *pare
     ui(new Ui::SelectFromListDialog)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Aceptar");
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText("Cancelar");
+
     for(int i = 0; i<list.count(); i++){
         sheetsList.append(list.at(i));
     }

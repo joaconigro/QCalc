@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     MainVentana mv;
-    QIcon icono(":/icon.ico");
+    QIcon icono(":/icono.png");
     mv.setWindowIcon(icono);
     mv.show();
 

@@ -5,8 +5,10 @@
 #include "xlsxsheetmodel.h"
 #include "xlsxcell.h"
 #include <QFileDialog>
+#include <QPushButton>
 #include <QVariant>
 #include "SelectFromListDialog.h"
+#include "ColumnSelectDialog.h"
 #include <QMessageBox>
 
 using namespace QXlsx;
@@ -22,13 +24,15 @@ TableView::TableView(QWidget *parent) :
     ui->finalSystemComboBox->addItems(viewModel->availableSystems());
     ui->initialDatumComboBox->addItems(viewModel->availableDatums());
     ui->finalDatumComboBox->addItems(viewModel->availableDatums());
-
+    columnX = columnY = 0;
+    columnZ = -1;
+    columnsConfigured = false;
 
     //Conections
-    connect(ui->convertButton, &QPushButton::clicked, this->viewModel, &ViewModel::startConverter);
-//    connect(ui->initialXLineEdit, &QLineEdit::textChanged, this->viewModel, &ViewModel::initialXChanged);
-//    connect(ui->initialYLineEdit, &QLineEdit::textChanged, this->viewModel, &ViewModel::initialYChanged);
-//    connect(ui->initialZLineEdit, &QLineEdit::textChanged, this->viewModel, &ViewModel::initialZChanged);
+    connect(this, &TableView::convertPoint, this->viewModel, &ViewModel::startConverter);
+    connect(this, &TableView::updateInitialX, this->viewModel, &ViewModel::initialXChanged);
+    connect(this, &TableView::updateInitialY, this->viewModel, &ViewModel::initialYChanged);
+    connect(this, &TableView::updateInitialZ, this->viewModel, &ViewModel::initialZChanged);
     connect(ui->initialSystemComboBox, &QComboBox::currentTextChanged, this, &TableView::inputSystemChanged);
     connect(ui->finalSystemComboBox, &QComboBox::currentTextChanged, this, &TableView::outputSystemChanged);
     connect(ui->initialSystemComboBox, &QComboBox::currentTextChanged, this->viewModel, &ViewModel::selectedInputSystemChanged);
@@ -38,9 +42,9 @@ TableView::TableView(QWidget *parent) :
 
     connect(viewModel, &ViewModel::updateInputZoneList, this, &TableView::updateInputZones);
     connect(viewModel, &ViewModel::updateOutputZoneList, this, &TableView::updateOutputZones);
-//    connect(viewModel, &ViewModel::updateFinalX, ui->finalXLineEdit, &QLineEdit::setText);
-//    connect(viewModel, &ViewModel::updateFinalY, ui->finalYLineEdit, &QLineEdit::setText);
-//    connect(viewModel, &ViewModel::updateFinalZ, ui->finalZLineEdit, &QLineEdit::setText);
+    connect(viewModel, &ViewModel::updateFinalX, this, &TableView::updateFinalX);
+    connect(viewModel, &ViewModel::updateFinalY, this, &TableView::updateFinalY);
+    connect(viewModel, &ViewModel::updateFinalZ, this, &TableView::updateFinalZ);
 
 
     connect(ui->initialZoneComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), viewModel, &ViewModel::selectedInputZoneChanged);
@@ -67,7 +71,7 @@ TableView::~TableView()
 
 void TableView::openExcelFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(0, "Abrir archivo de Excel", QString(), "*.xlsx");
+    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "*.xlsx");
 
 
     if (!filePath.isEmpty()){
@@ -97,6 +101,7 @@ void TableView::sheetListAccepted(const QString sheetName)
     message->setStandardButtons(QMessageBox::Yes);
     message->addButton(QMessageBox::No);
     message->setDefaultButton(QMessageBox::Yes);
+    message->button(QMessageBox::Yes)->setText("Sí");
 
     int startRow;
     if (message->exec()==QMessageBox::Yes){
@@ -120,18 +125,43 @@ void TableView::sheetListAccepted(const QString sheetName)
                     pCell = new QTableWidgetItem;
                     ui->multiPointTable->setItem(i-startRow, j, pCell);
                 }
-                pCell->setData(Qt::DisplayRole, sheet->cellAt(i+1, j+1)->value());
+                pCell->setData(Qt::DisplayRole, sheet->cellAt(i+1, j+1)->value().toString());
+                pCell->setTextAlignment(Qt::AlignRight);
             }
         }
 
+        //Crea los encabezados de las columnas para
+        //poder elegirlos
+        headers.clear();
         if (startRow>0){
-            QStringList headers;
             for (int j = 0; j < columns; j++) {
                 headers.append(sheet->cellAt(1, j+1)->value().toString());
             }
             ui->multiPointTable->setHorizontalHeaderLabels(headers);
+        } else {
+            for (int j = 0; j < columns; j++) {
+                headers.append(QString::number(j+1));
+            }
         }
     }
+}
+
+void TableView::updateFinalX(const QString xValue)
+{
+    QTableWidgetItem *pCell = ui->multiPointTable->item(currentRow, columnX);
+    pCell->setData(Qt::DisplayRole, xValue);
+}
+
+void TableView::updateFinalY(const QString yValue)
+{
+    QTableWidgetItem *pCell = ui->multiPointTable->item(currentRow, columnY);
+    pCell->setData(Qt::DisplayRole, yValue);
+}
+
+void TableView::updateFinalZ(const QString zValue)
+{
+    QTableWidgetItem *pCell = ui->multiPointTable->item(currentRow, columnZ);
+    pCell->setData(Qt::DisplayRole, zValue);
 }
 
 void TableView::inputSystemChanged(const QString name)
@@ -180,17 +210,73 @@ void TableView::setGeographicFormat(const ViewModel::GeographicFormat format)
 {
     emit changeGeographicFormat(format);
     geographicFormat = format;
-//    if (isGeographic){
-//        if (format == ViewModel::GeographicFormat::Decimal) {
-//            ui->initialXLineEdit->setValidator(new QDoubleValidator);
-//            ui->initialYLineEdit->setValidator(new QDoubleValidator);
-//        } else {
-//            ui->initialXLineEdit->setValidator(nullptr);
-//            ui->initialYLineEdit->setValidator(nullptr);
-//        }
-//    } else {
-//        ui->initialXLineEdit->setValidator(new QDoubleValidator);
-//        ui->initialYLineEdit->setValidator(new QDoubleValidator);
-//    }
+}
+
+
+//Muestra el diálogo de configuración de las columnas
+void TableView::on_columnsButton_clicked()
+{
+    ColumnSelectDialog *dialog = new ColumnSelectDialog(headers, this);
+    connect(dialog, &ColumnSelectDialog::updateXColumn, this, &TableView::onXColumnChanged);
+    connect(dialog, &ColumnSelectDialog::updateYColumn, this, &TableView::onYColumnChanged);
+    connect(dialog, &ColumnSelectDialog::updateZColumn, this, &TableView::onZColumnChanged);
+    connect(dialog, &ColumnSelectDialog::configureColumns, this, &TableView::onColumnsConfigured);
+
+    dialog->show();
+}
+
+void TableView::onXColumnChanged(int value)
+{
+    columnX = value;
+}
+
+void TableView::onYColumnChanged(int value)
+{
+    columnY = value;
+}
+
+void TableView::onZColumnChanged(int value)
+{
+    columnZ = value - 1;
+}
+
+void TableView::onColumnsConfigured(bool value)
+{
+    columnsConfigured = value;
+}
+
+void TableView::on_convertButton_clicked()
+{
+
+    if (columnsConfigured){
+        for (int i = 0; i < ui->multiPointTable->rowCount(); i++) {
+            currentRow = i;
+
+            //Carga la coordenada X en
+            QTableWidgetItem *xCell = ui->multiPointTable->item(i, columnX);
+            emit updateInitialX(xCell->data(Qt::DisplayRole).toString());
+
+            QTableWidgetItem *yCell = ui->multiPointTable->item(i, columnY);
+            emit updateInitialY(yCell->data(Qt::DisplayRole).toString());
+
+            if (columnZ >= 0){
+                QTableWidgetItem *zCell = ui->multiPointTable->item(i, columnZ);
+                emit updateInitialZ(zCell->data(Qt::DisplayRole).toString());
+            }
+
+            emit convertPoint();
+        }
+    } else {
+        QMessageBox *message = new QMessageBox(this);
+        message->setWindowTitle("Columnas");
+        message->setText("No se configuró qué columna corresponde a qué dato.");
+        message->setStandardButtons(QMessageBox::Ok);
+        message->setDefaultButton(QMessageBox::Ok);
+        message->button(QMessageBox::Ok)->setText("Aceptar");
+
+        message->show();
+    }
+
+
 
 }
