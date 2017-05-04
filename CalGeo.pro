@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     TableView.cpp \
     xlsxsheetmodel.cpp \
     SelectFromListDialog.cpp \
-    ColumnSelectDialog.cpp
+    ColumnSelectDialog.cpp \
+    GoogleMapsPointView.cpp
 
 HEADERS  += \
     Datum.h \
@@ -36,14 +37,16 @@ HEADERS  += \
     xlsxsheetmodel_p.h \
     xlsxsheetmodel.h \
     SelectFromListDialog.h \
-    ColumnSelectDialog.h
+    ColumnSelectDialog.h \
+    GoogleMapsPointView.h
 
 FORMS    += \
     MainVentana.ui \
     OnePoint.ui \
     TableView.ui \
     SelectFromListDialog.ui \
-    ColumnSelectDialog.ui
+    ColumnSelectDialog.ui \
+    GoogleMapsPointView.ui
 
 DISTFILES +=
 
