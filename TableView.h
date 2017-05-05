@@ -29,6 +29,8 @@ private:
     bool columnsConfigured;
     int currentRow;
 
+    void saveFileAs(const QString fileName);
+
 signals:
      void changeGeographicFormat(const ViewModel::GeographicFormat format);
      void convertPoint();
@@ -48,6 +50,8 @@ public slots:
     void updateInputZones(const QStringList list);
     void updateOutputZones(const QStringList list);
     void setGeographicFormat(const ViewModel::GeographicFormat format);
+    void saveFile();
+
 private slots:
     void on_columnsButton_clicked();
     void onXColumnChanged(int value);

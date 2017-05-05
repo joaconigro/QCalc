@@ -2,6 +2,6 @@
     <qresource prefix="/">
         <file>icono.icns</file>
         <file>icono.png</file>
-        <file>map.html</file>
+        <file>map.txt</file>
     </qresource>
 </RCC>

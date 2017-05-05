@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>372</height>
+    <width>606</width>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Posición del punto en Google Maps</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="recursos.qrc">
+    <normaloff>:/icono.png</normaloff>:/icono.png</iconset>
   </property>
  </widget>
- <resources/>
+ <resources>
+  <include location="recursos.qrc"/>
+ </resources>
  <connections/>
 </ui>

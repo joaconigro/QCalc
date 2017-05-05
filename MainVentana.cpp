@@ -39,21 +39,32 @@ MainVentana::~MainVentana()
 void MainVentana::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&Archivo"));
-    fileMenu->addAction(openExcelFile);
+
+
+    onePointMenu = menuBar()->addMenu(tr("&Un punto"));
+    onePointMenu->addAction(viewGoogleMapsAction);
+
+    tableMenu = menuBar()->addMenu(tr("&Tabla"));
+    tableMenu->addAction(openExcelFileAction);
+    tableMenu->addAction(saveTableAction);
 
     optionsMenu = menuBar()->addMenu(tr("&Opciones"));
     geographicFormatMenu = optionsMenu->addMenu("Formato de coordenadas geográficas...");
     geographicFormatMenu->addAction(decimalFormatAction);
     geographicFormatMenu->addAction(gmsFormatAction);
 
-    helpMenu = menuBar()->addMenu(tr("&Ayuda"));
+    helpMenu = menuBar()->addMenu(tr("Ayuda"));
+
 
 }
 
 void MainVentana::createActions()
 {
-    openExcelFile = new QAction(tr("Abrir archivo &Excel..."), this);
-    connect(openExcelFile, &QAction::triggered, this, &MainVentana::onExcelFileOpened);
+    openExcelFileAction = new QAction(tr("Abrir archivo &Excel..."), this);
+    connect(openExcelFileAction, &QAction::triggered, this, &MainVentana::onExcelFileOpened);
+
+    viewGoogleMapsAction = new QAction(tr("Ver punto en Google Maps"), this);
+    connect(viewGoogleMapsAction, &QAction::triggered, onePoint, &mainWindow::viewOnGoogleMaps);
 
     gmsFormatAction = new QAction(tr("&Grados minutos segundos"), this);
     gmsFormatAction->setCheckable(true);
@@ -67,6 +78,9 @@ void MainVentana::createActions()
     geographicFormatGroup = new QActionGroup(this);
     geographicFormatGroup->addAction(gmsFormatAction);
     geographicFormatGroup->addAction(decimalFormatAction);
+
+    saveTableAction = new QAction(tr("Guardar resultados..."), this);
+    connect(saveTableAction, &QAction::triggered, manyPoints, &TableView::saveFile);
 
 }
 

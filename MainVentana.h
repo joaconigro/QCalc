@@ -24,6 +24,7 @@ public:
 signals:
     void geographicFormatChanged(const ViewModel::GeographicFormat format);
     void loadExcelFile();
+    void clearOnePoint();
 
 private:
     Ui::MainVentana *ui;
@@ -32,16 +33,26 @@ private:
 
 
     QMenu *fileMenu;
+    QMenu *onePointMenu;
+    QMenu *tableMenu;
     QMenu *optionsMenu;
     QMenu *helpMenu;
     QMenu *geographicFormatMenu;
-    QAction *openExcelFile;
+
+    QAction *quitAction;
+    QAction *viewGoogleMapsAction;
+    QAction *clearOnePointAction;
+    QAction *openExcelFileAction;
+    QAction *viewOriginalDataAction;
+    QAction *columnsAction;
+    QAction *saveTableAction;
     QAction *decimalFormatAction;
     QAction *gmsFormatAction;
+
     QActionGroup *geographicFormatGroup;
 
     void createMenus();
-        void createActions();
+    void createActions();
 
 private slots:
     void onGmsTriggered();

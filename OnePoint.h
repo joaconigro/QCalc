@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "ViewModel.h"
+#include "GoogleMapsPointView.h"
 
 namespace Ui {
 class mainWindow;
@@ -21,6 +22,7 @@ private:
     ViewModel *viewModel;
     bool isGeographic;
     ViewModel::GeographicFormat geographicFormat;
+    GoogleMapsPointView *viewGoogleMaps;
 
 signals:
      void changeGeographicFormat(const ViewModel::GeographicFormat format);
@@ -34,6 +36,7 @@ public slots:
     void updateInputZones(const QStringList list);
     void updateOutputZones(const QStringList list);
     void setGeographicFormat(const ViewModel::GeographicFormat format);
+    void viewOnGoogleMaps();
 };
 
 #endif // MAINWINDOW_H

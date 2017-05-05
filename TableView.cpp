@@ -69,6 +69,35 @@ TableView::~TableView()
     delete ui;
 }
 
+void TableView::saveFileAs(const QString fileName)
+{
+    QXlsx::Document xlsxToSave;
+    xlsxToSave.addSheet("Conversión");
+
+
+    for (int i = 0; i < headers.count(); i++){
+        xlsxToSave.write(1, i+1, QVariant (headers.at(i)));
+    }
+
+    QLocale qLoc;
+    for (int i = 0; i < ui->multiPointTable->rowCount(); i++) {
+        for (int j = 0; j < ui->multiPointTable->columnCount(); j++) {
+            QTableWidgetItem *someCell = ui->multiPointTable->item(i, j);
+            QString tempValue = someCell->data(Qt::DisplayRole).toString();
+            bool ok;
+            double tempDouble = qLoc.toDouble(tempValue, &ok);
+            if (ok){
+                xlsxToSave.write(i+2, j+1, tempDouble);
+            } else {
+                xlsxToSave.write(i+2, j+1, tempValue);
+            }
+
+        }
+    }
+
+    xlsxToSave.saveAs(fileName);
+}
+
 void TableView::openExcelFile()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "*.xlsx");
@@ -210,6 +239,15 @@ void TableView::setGeographicFormat(const ViewModel::GeographicFormat format)
 {
     emit changeGeographicFormat(format);
     geographicFormat = format;
+}
+
+void TableView::saveFile()
+{
+     QString filePath = QFileDialog::getSaveFileName(this, "Guardar archivo de Excel", QString(), "*.xlsx");
+     if (!filePath.isEmpty()){
+         saveFileAs(filePath);
+     }
+
 }
 
 

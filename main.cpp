@@ -11,5 +11,5 @@ int main(int argc, char *argv[])
     mv.setWindowIcon(icono);
     mv.show();
 
-    return a.exec();
+   return a.exec();
 }

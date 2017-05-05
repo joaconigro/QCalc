@@ -138,3 +138,11 @@ void mainWindow::setGeographicFormat(const ViewModel::GeographicFormat format)
     }
 
 }
+
+void mainWindow::viewOnGoogleMaps()
+{
+    viewGoogleMaps = new GoogleMapsPointView(ui->initialXLineEdit->text(), ui->initialYLineEdit->text(),
+                                             ui->initialZLineEdit->text(), ui->initialSystemComboBox->currentText(),
+                                             ui->initialDatumComboBox->currentText(), ui->initialZoneComboBox->currentIndex());
+    viewGoogleMaps->show();
+}
