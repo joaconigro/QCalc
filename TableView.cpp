@@ -100,7 +100,7 @@ void TableView::saveFileAs(const QString fileName)
 
 void TableView::openExcelFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "*.xlsx");
+    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
 
 
     if (!filePath.isEmpty()){
@@ -243,8 +243,11 @@ void TableView::setGeographicFormat(const ViewModel::GeographicFormat format)
 
 void TableView::saveFile()
 {
-     QString filePath = QFileDialog::getSaveFileName(this, "Guardar archivo de Excel", QString(), "*.xlsx");
+     QString filePath = QFileDialog::getSaveFileName(this, "Guardar archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
      if (!filePath.isEmpty()){
+         if (!filePath.endsWith(".xlsx")){
+             filePath += ".xlsx";
+         }
          saveFileAs(filePath);
      }
 
