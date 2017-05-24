@@ -1410,16 +1410,16 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     //    writer.writeAttribute(QStringLiteral("header"), QStringLiteral("0.31496062992125984"));
     //    writer.writeAttribute(QStringLiteral("footer"), QStringLiteral("0.31496062992125984"));
     //    writer.writeEndElement();//pageMargins
-    writer.writeStartElement(QStringLiteral("pageSetup"));
-    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId1"));
-    writer.writeAttribute(QStringLiteral("orientation"),
-                          (d->pageOrientationPortait ? QStringLiteral("portrait") : QStringLiteral("landscape")));
-    writer.writeAttribute(QStringLiteral("paperSize"), QString::number(d->paperSize));
-    if (d->fitToWidth > -1)
-        writer.writeAttribute(QStringLiteral("fitToWidth"), QString::number(d->fitToWidth));
-    if (d->fitToHeight > -1)
-        writer.writeAttribute(QStringLiteral("fitToHeight"), QString::number(d->fitToHeight));
-    writer.writeEndElement();//pageSetup
+    //writer.writeStartElement(QStringLiteral("pageSetup"));
+    //writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId1"));
+    //writer.writeAttribute(QStringLiteral("orientation"),
+    //                      (d->pageOrientationPortait ? QStringLiteral("portrait") : QStringLiteral("landscape")));
+    //writer.writeAttribute(QStringLiteral("paperSize"), QString::number(d->paperSize));
+    //if (d->fitToWidth > -1)
+    //    writer.writeAttribute(QStringLiteral("fitToWidth"), QString::number(d->fitToWidth));
+    //if (d->fitToHeight > -1)
+    //    writer.writeAttribute(QStringLiteral("fitToHeight"), QString::number(d->fitToHeight));
+    //writer.writeEndElement();//pageSetup
 	
 	if (d->autoFilter) {
 		writer.writeStartElement(QStringLiteral("autoFilter"));
@@ -1693,25 +1693,6 @@ void WorksheetPrivate::saveXmlPageMargins(QXmlStreamWriter &writer) const
 void WorksheetPrivate::saveXmlPageSetup(QXmlStreamWriter &writer) const
 {
     XlsxPageSetup defaultValues;
-    
-    if ((pageSetup.paperSize          == defaultValues.paperSize) &&
-        (pageSetup.scale              == defaultValues.scale) &&
-        (pageSetup.firstPageNumber    == defaultValues.firstPageNumber) &&
-        (pageSetup.fitToWidth         == defaultValues.fitToWidth) &&
-        (pageSetup.fitToHeight        == defaultValues.fitToHeight) &&
-        (pageSetup.pageOrder          == defaultValues.pageOrder) &&
-        (pageSetup.orientation        == defaultValues.orientation) &&
-        (pageSetup.usePrinterDefaults == defaultValues.usePrinterDefaults) &&
-        (pageSetup.blackAndWhite      == defaultValues.blackAndWhite) &&
-        (pageSetup.draft              == defaultValues.draft) &&
-        (pageSetup.cellComments       == defaultValues.cellComments) &&
-        (pageSetup.useFirstPageNumber == defaultValues.useFirstPageNumber) &&
-        (pageSetup.errors             == defaultValues.errors) &&
-        (pageSetup.horizontalDpi      == defaultValues.horizontalDpi) &&
-        (pageSetup.verticalDpi        == defaultValues.verticalDpi) &&
-        (pageSetup.copies             == defaultValues.copies) &&
-        (pageSetup.rID                == defaultValues.rID))
-        return;
     
     writer.writeStartElement(QStringLiteral("pageSetup"));
     

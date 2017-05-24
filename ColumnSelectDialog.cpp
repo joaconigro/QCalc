@@ -2,16 +2,20 @@
 #include "ui_ColumnSelectDialog.h"
 #include <QPushButton>
 
-ColumnSelectDialog::ColumnSelectDialog(const QStringList columList, QWidget *parent) :
+ColumnSelectDialog::ColumnSelectDialog(const QStringList list, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ColumnSelectDialog)
 {
+    for(int i = 0; i < list.count(); i++){
+        columnList << list.at(i);
+    }
+
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Aceptar");
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText("Cancelar");
-    ui->XComboBox->addItems(columList);
-    ui->YComboBox->addItems(columList);
-    ui->ZComboBox->addItems(columList);
+    ui->XComboBox->addItems(columnList);
+    ui->YComboBox->addItems(columnList);
+    ui->ZComboBox->addItems(columnList);
     ui->ZComboBox->insertItem(0, "Omitir");
 
 }
@@ -33,12 +37,7 @@ void ColumnSelectDialog::on_YComboBox_currentIndexChanged(int index)
 
 void ColumnSelectDialog::on_ZComboBox_currentIndexChanged(int index)
 {
-    if (ui->ZComboBox->currentText() == "Omitir"){
-        emit updateZColumn(-1);
-    } else {
-        emit updateZColumn(index);
-    }
-
+    emit updateZColumn(index);
 }
 
 void ColumnSelectDialog::on_buttonBox_accepted()
@@ -49,4 +48,31 @@ void ColumnSelectDialog::on_buttonBox_accepted()
 void ColumnSelectDialog::on_buttonBox_rejected()
 {
     emit configureColumns(false);
+}
+
+void ColumnSelectDialog::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+    autoSelectColumns();
+}
+
+void ColumnSelectDialog::autoSelectColumns()
+{
+    ui->ZComboBox->setCurrentIndex(0);
+
+    for(int i = 0; i < columnList.count(); i++){
+        QString item = columnList.at(i);
+        if(item.contains("x", Qt::CaseInsensitive) || item.contains("long", Qt::CaseInsensitive) || item.contains("lng", Qt::CaseInsensitive)){
+            ui->XComboBox->setCurrentIndex(i);
+            emit updateXColumn(i);
+        }
+        if(item.contains("y", Qt::CaseInsensitive) || item.contains("lat", Qt::CaseInsensitive)){
+            ui->YComboBox->setCurrentIndex(i);
+            emit updateYColumn(i);
+        }
+        if(item.contains("z", Qt::CaseInsensitive) || item.contains("cota", Qt::CaseInsensitive) || item.contains("elev", Qt::CaseInsensitive)){
+            ui->ZComboBox->setCurrentIndex(i+1);
+            emit updateZColumn(i+1);
+        }
+    }
 }

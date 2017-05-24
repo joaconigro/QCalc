@@ -26,8 +26,9 @@ void GoogleMapsPointView::loadMap(const QString coordinateString)
     if(!sourcedHtml.open(QFile::ReadOnly | QFile::Text))
     {
         QMessageBox msgBox_2;
-        msgBox_2.setText("No se puede cargar el contenido de GoogleMaps");
+        msgBox_2.setText("No se puede cargar el contenido de Google Maps");
         msgBox_2.exec();
+        return;
     }
     QTextStream inStream(&sourcedHtml);
     QString tempHtml = inStream.readAll();

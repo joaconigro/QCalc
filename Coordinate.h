@@ -47,7 +47,6 @@ public:
     void convertCoordinate();
     ~Coordinate();
 
-
 signals:
     void xCalculated(const double x);
     void yCalculated(const double y);
@@ -69,8 +68,6 @@ public slots:
     void setInitialLongitude(const double lng);
     void setInitialElevation(const double elev);
     void setGeographicFormat(const GeographicType &format);
-
-
 
 };
 

@@ -21,7 +21,8 @@ void ViewModel::genereteAvailableGKZones()
     }
 }
 
-ViewModel::ViewModel(QWidget *parent)
+ViewModel::ViewModel(QWidget *parent) :
+    QWidget(parent)
 {
     availableSystem.insert(0, "Geográficas");
     availableSystem.insert(1, "UTM");

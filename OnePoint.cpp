@@ -8,7 +8,7 @@ mainWindow::mainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->initialZLineEdit->setValidator(new QDoubleValidator);
-    viewModel = new ViewModel();
+    viewModel = new ViewModel(this);
     ui->initialSystemComboBox->addItems(viewModel->availableSystems());
     ui->finalSystemComboBox->addItems(viewModel->availableSystems());
     ui->initialDatumComboBox->addItems(viewModel->availableDatums());

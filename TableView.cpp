@@ -28,7 +28,7 @@ TableView::TableView(QWidget *parent) :
     columnZ = -1;
     columnsConfigured = false;
 
-    //Conections
+    //Connections
     connect(this, &TableView::convertPoint, this->viewModel, &ViewModel::startConverter);
     connect(this, &TableView::updateInitialX, this->viewModel, &ViewModel::initialXChanged);
     connect(this, &TableView::updateInitialY, this->viewModel, &ViewModel::initialYChanged);
@@ -189,8 +189,10 @@ void TableView::updateFinalY(const QString yValue)
 
 void TableView::updateFinalZ(const QString zValue)
 {
-    QTableWidgetItem *pCell = ui->multiPointTable->item(currentRow, columnZ);
-    pCell->setData(Qt::DisplayRole, zValue);
+    if (columnZ >= 0){
+        QTableWidgetItem *pCell = ui->multiPointTable->item(currentRow, columnZ);
+        pCell->setData(Qt::DisplayRole, zValue);
+    }
 }
 
 void TableView::inputSystemChanged(const QString name)
