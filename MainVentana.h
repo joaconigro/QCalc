@@ -31,7 +31,7 @@ private:
     mainWindow *onePoint;
     TableView *manyPoints;
 
-
+    //Menúes
     QMenu *fileMenu;
     QMenu *onePointMenu;
     QMenu *tableMenu;
@@ -39,6 +39,7 @@ private:
     QMenu *helpMenu;
     QMenu *geographicFormatMenu;
 
+    //Actions
     QAction *quitAction;
     QAction *viewGoogleMapsAction;
     QAction *clearOnePointAction;
@@ -48,7 +49,8 @@ private:
     QAction *saveTableAction;
     QAction *decimalFormatAction;
     QAction *gmsFormatAction;
-
+    QAction *viewHelpAction;
+    QAction *aboutAction;
     QActionGroup *geographicFormatGroup;
 
     void createMenus();
@@ -58,6 +60,11 @@ private slots:
     void onGmsTriggered();
     void onDecimalTriggered();
     void onExcelFileOpened();
+    void viewHelp();
+    void aboutQCalc();
+
+public slots:
+    void tableOpened(bool opened);
 };
 
 #endif // MAINVENTANA_H

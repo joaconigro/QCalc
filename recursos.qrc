@@ -3,5 +3,6 @@
         <file>icono.icns</file>
         <file>icono.png</file>
         <file>map.txt</file>
+        <file>About.png</file>
     </qresource>
 </RCC>

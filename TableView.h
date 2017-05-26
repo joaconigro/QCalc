@@ -19,6 +19,7 @@ public:
 private:
     Ui::TableView *ui;
     QXlsx::Document *xlsx;
+    QString sheetName;
     ViewModel *viewModel;
     bool isGeographic;
     ViewModel::GeographicFormat geographicFormat;
@@ -29,7 +30,7 @@ private:
     bool columnsConfigured;
     int currentRow;
 
-    void saveFileAs(const QString fileName);
+
 
 signals:
      void changeGeographicFormat(const ViewModel::GeographicFormat format);
@@ -37,11 +38,13 @@ signals:
      void updateInitialX(const QString value);
      void updateInitialY(const QString value);
      void updateInitialZ(const QString value);
+     void fileOpened(bool opened);
 
 
 public slots:
     void openExcelFile();
-    void sheetListAccepted(const QString sheetName);
+    void readExcelFile();
+    void sheetListAccepted(const QString sheet);
     void updateFinalX(const QString xValue);
     void updateFinalY(const QString yValue);
     void updateFinalZ(const QString zValue);
@@ -50,7 +53,7 @@ public slots:
     void updateInputZones(const QStringList list);
     void updateOutputZones(const QStringList list);
     void setGeographicFormat(const ViewModel::GeographicFormat format);
-    void saveFile();
+    void saveFileAs();
 
 private slots:
     void on_columnsButton_clicked();
@@ -59,6 +62,7 @@ private slots:
     void onZColumnChanged(int value);
     void onColumnsConfigured(bool value);
     void on_convertButton_clicked();
+    void on_SaveButton_clicked();
 };
 
 #endif // TABLEVIEW_H

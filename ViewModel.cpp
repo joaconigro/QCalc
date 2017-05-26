@@ -32,6 +32,7 @@ ViewModel::ViewModel(QWidget *parent) :
     availableDatum.insert(1, "Campo Inchauspe");
 
     convertPoint = new Coordinate();
+    initialX = initialY = initialZ = 0.0;
     genereteAvailableUTMZones();
     genereteAvailableGKZones();
 
@@ -39,14 +40,13 @@ ViewModel::ViewModel(QWidget *parent) :
     connect(this->convertPoint, &Coordinate::xCalculated, this, &ViewModel::finalXChanged);
     connect(this->convertPoint, &Coordinate::yCalculated, this, &ViewModel::finalYChanged);
     connect(this->convertPoint, &Coordinate::zCalculated, this, &ViewModel::finalZChanged);
+
     connect(this, &ViewModel::initialDatumChanged, this->convertPoint, &Coordinate::setInitialDatum);
     connect(this, &ViewModel::finalDatumChanged, this->convertPoint, &Coordinate::setDestinationDatum);
     connect(this, &ViewModel::initialZoneChanged, this->convertPoint, &Coordinate::setInitialZone);
     connect(this, &ViewModel::finalZoneChanged, this->convertPoint, &Coordinate::setDestinationZone);
-
     connect(this, &ViewModel::initialSystemChanged, this->convertPoint, &Coordinate::setInitialSystem);
     connect(this, &ViewModel::finalSystemChanged, this->convertPoint, &Coordinate::setDestinationSystem);
-
 }
 
 QStringList ViewModel::availableSystems() const
@@ -59,10 +59,8 @@ QStringList ViewModel::availableDatums() const
     return availableDatum;
 }
 
-
 void ViewModel::startConverter()
 {
-
     if (setInputAsGeographic) {
         convertPoint->setInitialLongitude(initialX);
         convertPoint->setInitialLatitude(initialY);
@@ -77,7 +75,6 @@ void ViewModel::startConverter()
 
 void ViewModel::initialXChanged(const QString xValue)
 {
-
     QLocale qLoc;
     QChar decimalChar = qLoc.decimalPoint();
     double tempValue;
@@ -103,16 +100,12 @@ void ViewModel::initialXChanged(const QString xValue)
         if (tempValue != convertPoint->getInitialX()){
             convertPoint->setInitialX(tempValue);
             initialX = tempValue;
-
         }
-
     }
-
 }
 
 void ViewModel::initialYChanged(const QString yValue)
 {
-
     QLocale qLoc;
     QChar decimalChar = qLoc.decimalPoint();
     QString tempNumber;
@@ -140,13 +133,11 @@ void ViewModel::initialYChanged(const QString yValue)
             convertPoint->setInitialY(tempValue);
             initialY = tempValue;
         }
-
     }
 }
 
 void ViewModel::initialZChanged(const QString zValue)
 {
-
     QLocale qLoc;
     QChar decimalChar = qLoc.decimalPoint();
     QString tempNumber;
@@ -163,7 +154,6 @@ void ViewModel::initialZChanged(const QString zValue)
             convertPoint->setInitialZ(tempValue);
             initialZ = tempValue;
         }
-
     }
 }
 
@@ -204,7 +194,13 @@ void ViewModel::finalYChanged(const double yValue)
 void ViewModel::finalZChanged(const double zValue)
 {
     QLocale qLoc;
-    QString tempValue = qLoc.toString(zValue, 'f', 3);
+    QString tempValue;
+    if (zValue > 10000.0 || zValue < -11000.0){
+        tempValue = qLoc.toString(0.0, 'f', 3);
+    } else {
+        tempValue = qLoc.toString(zValue, 'f', 3);
+    }
+
     emit updateFinalZ(tempValue);
 }
 
@@ -222,7 +218,6 @@ void ViewModel::selectedInputSystemChanged(const QString name)
         }
     }
     emit initialSystemChanged(initialSystem);
-
 }
 
 void ViewModel::selectedOutputSystemChanged(const QString name)
@@ -268,7 +263,6 @@ void ViewModel::selectedInputZoneChanged(const int region)
         hem = CoordinateSystem::HemisphereType::South;
         emit initialZoneChanged(reg, hem);
     }
-
 }
 
 void ViewModel::selectedOutputZoneChanged(const int region)
@@ -288,7 +282,6 @@ void ViewModel::selectedOutputZoneChanged(const int region)
         hem = CoordinateSystem::HemisphereType::South;
         emit finalZoneChanged(reg, hem);
     }
-
 }
 
 void ViewModel::setGeographicFormat(const ViewModel::GeographicFormat format)
@@ -304,6 +297,8 @@ double ViewModel::validateGeographicGMSCoordinate(const QString &value)
     QChar signChar;
     QChar decimalChar = qloc.decimalPoint();
     resultValue.clear();
+
+    //Arma un QString limpio para poder pasarlo a número.
     foreach (QChar c, value) {
         if (c.isDigit()){
             resultValue.append(c);
@@ -318,9 +313,11 @@ double ViewModel::validateGeographicGMSCoordinate(const QString &value)
         }
     }
 
+    //Genera una lista a partir del QString generado
     QStringList tempList = resultValue.split(' ', QString::SkipEmptyParts);
     double result = 0.0;
 
+    //Calcula los grados decimales
     for (int i = 0; i < tempList.length(); i++){
         QString tempNumber = tempList.at(i);
         tempNumber = tempNumber.replace('.', decimalChar);
@@ -328,21 +325,23 @@ double ViewModel::validateGeographicGMSCoordinate(const QString &value)
         result = result + qloc.toDouble(tempNumber) / pow(60.0, i);
     }
 
+    //Le pone el signo que corresponde al valor angular decimal
     if (signChar == '-'){
         result = result * (-1.0);
     }
 
     return result;
-
 }
 
 QString ViewModel::setOutputAsGSM(const double value, bool isLatitude)
 {
+    //Separa los grados, minutos y segundos
     int degrees = trunc(value);
     double minutesWithDecimal = std::abs(value - degrees) * 60.0;
     int minutes = trunc(minutesWithDecimal);
     double seconds = (minutesWithDecimal - minutes) * 60.0;
 
+    //Verifica que hemisferio le corresponde
     QChar letter;
     if (isLatitude) {
         if (degrees >= 0){
@@ -358,6 +357,7 @@ QString ViewModel::setOutputAsGSM(const double value, bool isLatitude)
         }
     }
 
+    //Arma el QString
     QLocale qLoc;
     QString result = qLoc.toString(abs(degrees)) + "º " +
             qLoc.toString(minutes) + "\' " +

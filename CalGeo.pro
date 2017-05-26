@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     xlsxsheetmodel.cpp \
     SelectFromListDialog.cpp \
     ColumnSelectDialog.cpp \
-    GoogleMapsPointView.cpp
+    GoogleMapsPointView.cpp \
+    AboutQCalc.cpp
 
 HEADERS  += \
     Datum.h \
@@ -38,7 +39,9 @@ HEADERS  += \
     xlsxsheetmodel.h \
     SelectFromListDialog.h \
     ColumnSelectDialog.h \
-    GoogleMapsPointView.h
+    GoogleMapsPointView.h \
+    AboutQCalc.h \
+    appinfo.h
 
 FORMS    += \
     MainVentana.ui \
@@ -46,7 +49,8 @@ FORMS    += \
     TableView.ui \
     SelectFromListDialog.ui \
     ColumnSelectDialog.ui \
-    GoogleMapsPointView.ui
+    GoogleMapsPointView.ui \
+    AboutQCalc.ui
 
 DISTFILES +=
 

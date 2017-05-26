@@ -10,6 +10,7 @@
 #include "SelectFromListDialog.h"
 #include "ColumnSelectDialog.h"
 #include <QMessageBox>
+#include <QFile>
 
 using namespace QXlsx;
 
@@ -69,57 +70,7 @@ TableView::~TableView()
     delete ui;
 }
 
-void TableView::saveFileAs(const QString fileName)
-{
-    QXlsx::Document xlsxToSave;
-    xlsxToSave.addSheet("Conversión");
-
-
-    for (int i = 0; i < headers.count(); i++){
-        xlsxToSave.write(1, i+1, QVariant (headers.at(i)));
-    }
-
-    QLocale qLoc;
-    for (int i = 0; i < ui->multiPointTable->rowCount(); i++) {
-        for (int j = 0; j < ui->multiPointTable->columnCount(); j++) {
-            QTableWidgetItem *someCell = ui->multiPointTable->item(i, j);
-            QString tempValue = someCell->data(Qt::DisplayRole).toString();
-            bool ok;
-            double tempDouble = qLoc.toDouble(tempValue, &ok);
-            if (ok){
-                xlsxToSave.write(i+2, j+1, tempDouble);
-            } else {
-                xlsxToSave.write(i+2, j+1, tempValue);
-            }
-
-        }
-    }
-
-    xlsxToSave.saveAs(fileName);
-}
-
-void TableView::openExcelFile()
-{
-    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
-
-
-    if (!filePath.isEmpty()){
-        xlsx = new Document(filePath);
-
-        if (xlsx->sheetNames().count() > 1){
-            SelectFromListDialog *listDialog = new SelectFromListDialog(xlsx->sheetNames(), this);
-
-            connect(listDialog, &SelectFromListDialog::selectedSheetChanged, this, &TableView::sheetListAccepted);
-
-            listDialog->show();
-        } else {
-            QString sheetName = xlsx->currentWorksheet()->sheetName();
-            sheetListAccepted(sheetName);
-        }
-    }
-}
-
-void TableView::sheetListAccepted(const QString sheetName)
+void TableView::readExcelFile()
 {
 
     Worksheet *sheet = dynamic_cast<Worksheet *>(xlsx->sheet(sheetName));
@@ -173,6 +124,80 @@ void TableView::sheetListAccepted(const QString sheetName)
             }
         }
     }
+}
+
+void TableView::saveFileAs()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, "Guardar archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
+    if (!filePath.isEmpty()){
+        if (!filePath.endsWith(".xlsx")){
+            filePath += ".xlsx";
+        }
+
+        QXlsx::Document xlsxToSave;
+        xlsxToSave.addSheet("Conversión");
+
+
+        for (int i = 0; i < headers.count(); i++){
+            xlsxToSave.write(1, i+1, QVariant (headers.at(i)));
+        }
+
+        QLocale qLoc;
+        for (int i = 0; i < ui->multiPointTable->rowCount(); i++) {
+            for (int j = 0; j < ui->multiPointTable->columnCount(); j++) {
+                QTableWidgetItem *someCell = ui->multiPointTable->item(i, j);
+                QString tempValue = someCell->data(Qt::DisplayRole).toString();
+                bool ok;
+                double tempDouble = qLoc.toDouble(tempValue, &ok);
+                if (ok){
+                    xlsxToSave.write(i+2, j+1, tempDouble);
+                } else {
+                    xlsxToSave.write(i+2, j+1, tempValue);
+                }
+                }
+        }
+
+         xlsxToSave.saveAs(filePath);
+
+    }
+
+}
+
+void TableView::openExcelFile()
+{
+    //Muestra el cuadro de apertura del archivo Excel
+    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
+    QFile file;
+    file.setFileName(filePath);
+
+    //Si el archivo existe
+    if (file.exists()){
+        if (!filePath.isEmpty()){
+            xlsx = new Document(filePath);
+
+            //Si hay mas de una hoja muestra el dialogo de seleccion
+            if (xlsx->sheetNames().count() > 1){
+                SelectFromListDialog *listDialog = new SelectFromListDialog(xlsx->sheetNames(), this);
+                connect(listDialog, &SelectFromListDialog::selectedSheetChanged, this, &TableView::sheetListAccepted);
+
+                listDialog->show();
+            } else {
+                //Sino selecciona automaticamente la unica hoja
+                sheetName = xlsx->currentWorksheet()->sheetName();
+                readExcelFile();
+            }
+            emit fileOpened(true);
+            return;
+        }
+    }
+    emit fileOpened(false);
+
+}
+
+void TableView::sheetListAccepted(const QString sheet)
+{
+    sheetName = sheet;
+    readExcelFile();
 }
 
 void TableView::updateFinalX(const QString xValue)
@@ -243,18 +268,6 @@ void TableView::setGeographicFormat(const ViewModel::GeographicFormat format)
     geographicFormat = format;
 }
 
-void TableView::saveFile()
-{
-     QString filePath = QFileDialog::getSaveFileName(this, "Guardar archivo de Excel", QString(), "Archivos de Microsoft Excel (*.xlsx)");
-     if (!filePath.isEmpty()){
-         if (!filePath.endsWith(".xlsx")){
-             filePath += ".xlsx";
-         }
-         saveFileAs(filePath);
-     }
-
-}
-
 
 //Muestra el diálogo de configuración de las columnas
 void TableView::on_columnsButton_clicked()
@@ -322,4 +335,9 @@ void TableView::on_convertButton_clicked()
 
 
 
+}
+
+void TableView::on_SaveButton_clicked()
+{
+    saveFileAs();
 }

@@ -32,7 +32,7 @@ private:
     void genereteAvailableUTMZones();
     void genereteAvailableGKZones();
 
-    double validateGeographicGMSCoordinate(const QString &value);
+
     QString setOutputAsGSM(const double value, bool isLatitude);
 
 public:
@@ -40,6 +40,7 @@ public:
     QStringList availableSystems() const;
     QStringList availableDatums() const;
     Coordinate *convertPoint;
+    static double validateGeographicGMSCoordinate(const QString &value);
 
 signals:
     void updateFinalX(const QString xValue);
