@@ -7,12 +7,16 @@ mainWindow::mainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->initialZLineEdit->setValidator(new QDoubleValidator);
+
     viewModel = new ViewModel(this);
     ui->initialSystemComboBox->addItems(viewModel->availableSystems());
     ui->finalSystemComboBox->addItems(viewModel->availableSystems());
     ui->initialDatumComboBox->addItems(viewModel->availableDatums());
     ui->finalDatumComboBox->addItems(viewModel->availableDatums());
+
+    myValidator = new QDoubleValidator(this);
+    myValidator->setNotation(QDoubleValidator::StandardNotation);
+    ui->initialZLineEdit->setValidator(myValidator);
 
 
     //Conections
@@ -79,8 +83,8 @@ void mainWindow::inputSystemChanged(const QString name)
         ui->initialZoneLabel->setVisible(false);
         isGeographic = true;
     } else{
-        ui->initialXLabel->setText("X: ");
-        ui->initialYLabel->setText("Y: ");
+        ui->initialXLabel->setText("Este: ");
+        ui->initialYLabel->setText("Norte: ");
         ui->initialZoneComboBox->setVisible(true);
         ui->initialZoneLabel->setVisible(true);
         isGeographic = false;
@@ -98,8 +102,8 @@ void mainWindow::outputSystemChanged(const QString name)
         ui->finalZoneComboBox->setVisible(false);
         ui->finalZoneLabel->setVisible(false);
     } else{
-        ui->finalXLabel->setText("X: ");
-        ui->finalYLabel->setText("Y: ");
+        ui->finalXLabel->setText("Este: ");
+        ui->finalYLabel->setText("Norte: ");
         ui->finalZoneComboBox->setVisible(true);
         ui->finalZoneLabel->setVisible(true);
     }
@@ -126,15 +130,15 @@ void mainWindow::setGeographicFormat(const ViewModel::GeographicFormat format)
     geographicFormat = format;
     if (isGeographic){
         if (format == ViewModel::GeographicFormat::Decimal) {
-            ui->initialXLineEdit->setValidator(new QDoubleValidator);
-            ui->initialYLineEdit->setValidator(new QDoubleValidator);
+            ui->initialXLineEdit->setValidator(myValidator);
+            ui->initialYLineEdit->setValidator(myValidator);
         } else {
             ui->initialXLineEdit->setValidator(nullptr);
             ui->initialYLineEdit->setValidator(nullptr);
         }
     } else {
-        ui->initialXLineEdit->setValidator(new QDoubleValidator);
-        ui->initialYLineEdit->setValidator(new QDoubleValidator);
+        ui->initialXLineEdit->setValidator(myValidator);
+        ui->initialYLineEdit->setValidator(myValidator);
     }
 
 }

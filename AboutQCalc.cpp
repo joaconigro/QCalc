@@ -19,6 +19,8 @@ AboutQCalc::AboutQCalc(QWidget *parent) :
     QString qtv = QT_VERSION_STR;
     ui->labelQtVersion->setText("Basado en Qt " + qtv);
 
+    this->adjustSize();
+
 }
 
 AboutQCalc::~AboutQCalc()

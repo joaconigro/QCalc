@@ -33,7 +33,7 @@ MainVentana::MainVentana(QWidget *parent) :
     connect(this, &MainVentana::geographicFormatChanged, manyPoints, &TableView::setGeographicFormat);
     connect(this, &MainVentana::loadExcelFile, manyPoints, &TableView::openExcelFile);
     connect(manyPoints, &TableView::fileOpened, this, &MainVentana::tableOpened);
-
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainVentana::tabChanged);
     emit gmsFormatAction->triggered();
 }
 
@@ -148,6 +148,19 @@ void MainVentana::aboutQCalc()
 {
     AboutQCalc *about = new AboutQCalc();
     about->show();
+}
+
+void MainVentana::tabChanged(int index)
+{
+    if (index == 0){
+        ui->tabWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        ui->tabWidget->resize(ui->tabWidget->minimumSizeHint());
+    } else{
+        ui->tabWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    }
+
+    ui->tabWidget->adjustSize();
+    this->adjustSize();
 }
 
 void MainVentana::tableOpened(bool opened)

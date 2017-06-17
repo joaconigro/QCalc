@@ -62,6 +62,7 @@ private slots:
     void onExcelFileOpened();
     void viewHelp();
     void aboutQCalc();
+    void tabChanged(int index);
 
 public slots:
     void tableOpened(bool opened);

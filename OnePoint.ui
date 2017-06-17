@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>545</width>
-    <height>327</height>
+    <height>328</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,7 +43,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="initialXLabel">
            <property name="text">
-            <string>X: </string>
+            <string>Este: </string>
            </property>
           </widget>
          </item>
@@ -57,7 +57,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="initialYLabel">
            <property name="text">
-            <string>Y: </string>
+            <string>Norte: </string>
            </property>
           </widget>
          </item>
@@ -129,7 +129,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="finalXLabel">
            <property name="text">
-            <string>X: </string>
+            <string>Este: </string>
            </property>
           </widget>
          </item>
@@ -140,13 +140,6 @@
            </property>
            <property name="readOnly">
             <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="finalYLabel">
-           <property name="text">
-            <string>Y: </string>
            </property>
           </widget>
          </item>
@@ -174,6 +167,13 @@
            </property>
            <property name="readOnly">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="finalYLabel">
+           <property name="text">
+            <string>Norte: </string>
            </property>
           </widget>
          </item>

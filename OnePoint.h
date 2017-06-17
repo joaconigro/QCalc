@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "ViewModel.h"
 #include "GoogleMapsPointView.h"
+#include <QDoubleValidator>
 
 namespace Ui {
 class mainWindow;
@@ -23,6 +24,7 @@ private:
     bool isGeographic;
     ViewModel::GeographicFormat geographicFormat;
     GoogleMapsPointView *viewGoogleMaps;
+    QDoubleValidator *myValidator;
 
 signals:
      void changeGeographicFormat(const ViewModel::GeographicFormat format);

@@ -160,6 +160,7 @@ void ViewModel::initialZChanged(const QString zValue)
 void ViewModel::finalXChanged(const double xValue)
 {
     QLocale qLoc;
+    qLoc.setNumberOptions(QLocale::OmitGroupSeparator);
     QString tempValue;
     if (setOutputAsGeographic) {
         if (geographicFormat == GeographicFormat::GMS){
@@ -177,6 +178,7 @@ void ViewModel::finalXChanged(const double xValue)
 void ViewModel::finalYChanged(const double yValue)
 {
     QLocale qLoc;
+    qLoc.setNumberOptions(QLocale::OmitGroupSeparator);
     QString tempValue;
     if (setOutputAsGeographic) {
         if (geographicFormat == GeographicFormat::GMS){
@@ -194,6 +196,7 @@ void ViewModel::finalYChanged(const double yValue)
 void ViewModel::finalZChanged(const double zValue)
 {
     QLocale qLoc;
+    qLoc.setNumberOptions(QLocale::OmitGroupSeparator);
     QString tempValue;
     if (zValue > 10000.0 || zValue < -11000.0){
         tempValue = qLoc.toString(0.0, 'f', 3);
@@ -359,6 +362,7 @@ QString ViewModel::setOutputAsGSM(const double value, bool isLatitude)
 
     //Arma el QString
     QLocale qLoc;
+    qLoc.setNumberOptions(QLocale::OmitGroupSeparator);
     QString result = qLoc.toString(abs(degrees)) + "º " +
             qLoc.toString(minutes) + "\' " +
             qLoc.toString(seconds, 'f', 2) + "\'' " + letter;
